@@ -1,0 +1,19 @@
+.form_auth {
+	max-width: 330px;
+	padding: 15px;
+}
+
+.form_auth .logo {
+	width: 170px;
+	height: 150px;
+	border: 10px ridge pink;
+}
+
+.form_auth .form-floating:focus-within {
+	z-index: 2;
+}
+
+.form_auth button[type="submit"] {
+	background-color: #ec6fbf;
+	border: 1px solid grey;
+}
