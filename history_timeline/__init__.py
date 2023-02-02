@@ -1,6 +1,6 @@
 import os
 from flask import Flask
-from history_timeline import db
+from history_timeline import db, main, auth
 
 
 def create_app():
@@ -27,5 +27,9 @@ def create_app():
 
 	# initialise database utilities 
 	db.init_app(app)
+
+	# register blueprints
+	app.register_blueprint(main.bp)
+	app.register_blueprint(auth.bp)
 
 	return app
