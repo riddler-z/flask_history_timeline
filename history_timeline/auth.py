@@ -69,6 +69,7 @@ def login():
 		if not error:
 			session.clear()
 			session['user_id'] = user['id']
+			db.execute('UPDATE tabUser SET last_login = ?', [datetime.now()])
 			return redirect(url_for('index'))
 
 		flash(error)
