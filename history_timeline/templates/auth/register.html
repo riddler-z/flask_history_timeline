@@ -7,14 +7,14 @@
 {% block content %}
 <main class="form_auth w-100 m-auto text-center">
 	<form method="Post">
-		<img class="logo mb-4" src="{{ url_for('static', filename='app_logo.png') }}" alt="logo">
+		<img class="logo mb-4" src="{{ url_for('static', filename='img/app_logo.png') }}" alt="logo">
 		<h1 class="h3 mb-3 fw-normal">Please Register</h1>
         
 		{% for message in get_flashed_messages() %}
 			<div class="flash">{{ message }}</div>
 		{% endfor %}
 		<div class="form-floating">
-			<input type="text" class="form-control" id="first_name" name="first_name" placeholder="First Name" required>
+			<input type="text" class="form-control" name="first_name" placeholder="First Name" required>
 			<label for="first_name">First Name</label>
 		</div>
 		<div class="form-floating">
