@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}New Event{% endblock %}
+
+
+{% block style %}
+<style>
+
+</style>
+{% endblock %}
+
+
+{% block content %}
+<main class="">
+	<form method="Post">
+		<h1 class="">Create New Event</h1>
+
+		<select class="form-select" name="country">
+			<option selected>Select a Country from list</option>
+			<option value="Italy">Italy</option>
+			<option value="Germany">Germany</option>
+		</select>
+		<div class="form-floating">
+			<input type="number" class="form-control" name="year" placeholder="Year" required>
+			<label for="year">Year</label>
+		</div>
+		<div class="form-floating">
+			<input type="text" class="form-control" name="title" placeholder="Title" required>
+			<label for="title">Title</label>
+		</div>
+		<div class="form-floating">
+			<textarea class="form-control" style="height:150px" name="description" placeholder="Description" rows="4"></textarea>
+			<label for="description">Description</label>
+		</div>
+		<div class="d-grid">
+			<button class="btn btn-primary" type="submit">Create Event</button>
+		</div>
+	</form>
+</main>
+{% endblock %}

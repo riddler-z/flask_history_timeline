@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block style %}
+<!-- TODO: need to look at the css later and html too -->
+<style>
+	.form_auth {
+		max-width: 40vw;
+		padding: 15px;
+	}
+	
+	.form_auth .logo {
+		width: 170px;
+		height: 150px;
+		border: 10px ridge pink;
+	}
+	
+	.form_auth .form-floating:focus-within {
+		z-index: 2;
+	}
+	
+	.form_auth button[type="submit"] {
+		background-color: #ec6fbf;
+		border: 1px solid grey;
+	}
+	
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="form_auth m-auto text-center">
+	<form method="Post">
+		<img class="logo mb-4" src="{{ url_for('static', filename='img/app_logo.png') }}" alt="logo">
+		<h1 class="h3 mb-3 fw-normal">Please Register</h1>
+
+		<div class="form-floating">
+			<input type="text" class="form-control" name="first_name" placeholder="First Name" required>
+			<label for="first_name">First Name</label>
+		</div>
+		<div class="form-floating">
+			<input type="text" class="form-control" id="last_name" name="last_name" placeholder="Last Name" required>
+			<label for="last_name">Last Name</label>
+		</div>
+		<div class="form-floating">
+			<input type="email" class="form-control" id="email" name="email" placeholder="name@example.com" required>
+			<label for="email">Email address</label>
+		</div>
+		<div class="form-floating">
+			<input type="password" class="form-control" name="password" id="password" placeholder="Password">
+			<label for="password">Password</label>
+		</div>
+		<div class="form-floating">
+			<input type="password" class="form-control" name="re_password" id="re_password" placeholder="Enter Password Again">
+			<label for="re_password">Enter Password Again</label>
+		</div>
+		<div class="checkbox mb-3">
+			<label>
+				<input type="checkbox" name="is_teacher"> I am a teacher
+			</label>
+		</div>
+		<a href="{{ url_for('auth.login') }}">Already have an account? Log In</a>
+		<button class="w-100 btn btn-lg btn-primary" type="submit">Register</button>
+	</form>
+</main>
+{% endblock %}

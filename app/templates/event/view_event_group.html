@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% set event_year = (data.keys() | list)[0] %}
+
+{% block title %}Event Group {{ event_year }}{% endblock %}
+
+
+{% block style %}
+<style>
+	.event-container {
+		background-color: #f2f2f2;
+		border: 1px solid #ccc;
+	}
+</style>
+{% endblock %}
+
+
+{% block content %}
+	{% if data %}
+	<div class="">
+		<div class="row">
+			{% for country, events in data[event_year].items() %}
+			<div class="col-6">
+				<div class="d-flex justify-content-center align-items-center flex-column">
+					<h5>{{ country }}</h5>
+					<h6>{{ event_year }}</h6>
+				</div>
+				{% for event in events %}
+				<div class="event-container w-80 m-auto mt-5 p-3">
+					<h3 class="text-center text-uppercase">{{ event.event_title }}</h3>
+					<p>{{ event.event_description }}</p>
+				</div>
+				{% endfor %}
+			</div>
+			{% endfor %}
+		</div>
+	</div>
+	{% else %}
+	<div>
+		Nothing to show.
+	</div>
+	{% endif %}
+{% endblock %}

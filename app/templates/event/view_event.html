@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}Event {{ data.event_id }}{% endblock %}
+
+
+{% block style %}
+<style>
+	.event-container {
+		background-color: #f2f2f2;
+		border: 1px solid #ccc;
+	}
+	
+</style>
+{% endblock %}
+
+
+{% block content %}
+	{% if g and g.user and g.user.role == "Teacher" %}
+	<div class="d-flex justify-content-end my-4">
+		<a class="btn btn-primary" href="{{ url_for('event.edit_event', event_id=data.event_id) }}">
+			Edit Event
+		</a>
+	</div>
+	{% endif %}
+
+	{% if data %}
+    <div class="event-container w-80 m-auto mt-5 p-3">
+        <h5>{{ data.event_country }}</h5>
+        <h6>{{ data.event_year }}</h6>
+        <h3 class="text-center text-uppercase">{{ data.event_title }}</h3>
+        <p>{{ data.event_description }}</p>
+    </div>
+	{% else %}
+	<div>
+		Nothing to show.
+	</div>
+	{% endif %}
+
+{% endblock %}

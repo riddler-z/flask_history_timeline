@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Event{% endblock %}
+
+
+{% block style %}
+<style>
+
+</style>
+{% endblock %}
+
+
+{% block content %}
+	{% if g and g.user and g.user.user_type == "Teacher" %}
+	<div class="d-flex justify-content-end my-4">
+		<form action="{{ url_for('event.delete_event', event_id=data['event_id']) }}" method="post">
+			<input class="btn btn-danger" type="submit" value="Delete Event" onclick="return confirm('Are you sure?');">
+		</form>
+	</div>
+	{% endif %}
+
+	<main class="">
+		<form method="Post">
+			<h1 class="">Edit Event</h1>
+
+			<select class="form-select" name="country" disabled>
+				<option selected>{{ data.event_country }}</option>
+			</select>
+			<div class="form-floating">
+				<input type="number" class="form-control" name="year" placeholder="Year" value="{{ data.event_year }}" required disabled>
+				<label for="year">Year</label>
+			</div>
+			<div class="form-floating">
+				<input type="text" class="form-control" name="title" placeholder="Title" value="{{ data.event_title }}" required disabled>
+				<label for="title">Title</label>
+			</div>
+			<div class="form-floating">
+				<textarea class="form-control" style="height:150px" name="description" placeholder="Description" rows="4">{{ data.event_description }}</textarea>
+				<label for="description">Description</label>
+			</div>
+			<div class="d-grid">
+				<button class="btn btn-primary" type="submit">Edit Event</button>
+			</div>
+		</form>
+		<hr>
+		<form action="{{ url_for('event.delete_event', event_id=data.event_id) }}" method="post">
+			<input class="btn btn-danger" type="submit" value="Delete" onclick="return confirm('Are you sure?');">
+		</form>
+	</main>
+{% endblock %}

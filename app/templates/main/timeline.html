@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block title %}Index{% endblock %}
+
+
+{% block style %}
+	<style>
+		:root {
+			--timeline_height: {{ '100%' if (data.items() | length) > 2 else '50%' }};
+		}
+	</style>
+
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/timeline.css') }}">
+{% endblock %}
+
+
+{% block content %}
+<main>
+	{% if g and g.user and g.user.role == "Teacher" %}
+	<div class="d-flex justify-content-end my-4">
+		<a class="btn btn-success" href="{{ url_for('event.create_event') }}">
+			Add New Event
+			<span class="fa fa-plus"></span>
+		</a>
+	</div>
+	{% endif %}
+
+
+	{% set left_country = "Germany" %}
+	{% set right_country = "Italy" %}
+
+	{% if data %}
+	<div class="timeline">
+
+		<div class="row h3 text-uppercase text-center p-3">
+			<div class="col-6">{{ left_country }}</div>
+			<div class="col-6">{{ right_country }}</div>
+		</div>
+
+		<div class="container">
+
+			{% for year, event_group in data.items() %}
+			<div class="event_group row my-3">
+				<div class="event_left col-6 text-end">
+					<div class="event_year">
+						<a href="{{ url_for('event.view_event_group', event_year=year) }}">{{ year }}</a>
+					</div>
+					{% for event in event_group[left_country] %}
+					<div class="event_title">
+						<a href="{{ url_for('event.view_event', event_id=event.event_id) }}">
+							{{ event.event_title }}
+						</a>
+					</div>
+					{% endfor %}
+				</div>
+				<div class="event_right col-6 event_right">
+					<div class="event_year">
+						<a href="{{ url_for('event.view_event_group', event_year=year) }}">{{ year }}</a>
+					</div>
+					{% for event in event_group[right_country] %}
+					<div class="event_title">
+						<a href="{{ url_for('event.view_event', event_id=event.event_id) }}">{{ event.event_title }}</a>
+					</div>
+					{% endfor %}
+				</div>
+			</div>
+			{% endfor %}
+
+		</div>
+	</div>
+	{% else %}
+		<p>No event to show. Please add an event.</p>
+	{% endif %}
+</main>
+{% endblock %}
