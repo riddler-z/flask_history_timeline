@@ -63,6 +63,8 @@ def create_event():
 
 		if country not in ["Italy", "Germany"]:
 			error = 'Please select a country from list'
+		elif int(year) not in range(1000, 3000):
+			error = 'Invalid year'
 
 		if not error:
 			try:

@@ -99,6 +99,7 @@ def login():
 @bp.route('/logout')
 def logout():
 	session.clear()
+	flash("Logged out successfully", 'info')
 	return redirect(url_for('timeline'))
 
 
