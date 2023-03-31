@@ -68,9 +68,11 @@ def create_event():
 
 		if not error:
 			try:
-				cursor = db.execute("""INSERT INTO tabEvent (event_country, event_year, event_title,
-					event_description, created_by_user, creation) VALUES (?, ?, ?, ?, ?, ?)""",
-					[country, year, title, description, session.get('user_id'), datetime.now()])
+				cursor = db.execute(
+					'INSERT INTO tabEvent (event_country, event_year, event_title, event_description, '
+					'created_by_user, creation) VALUES (?, ?, ?, ?, ?, ?)',
+					[country, year, title, description, session.get('user_id'), datetime.now()]
+				)
 
 				event_id = cursor.lastrowid
 				db.commit()
@@ -97,19 +99,19 @@ def edit_event(event_id):
 	if request.method == 'POST':
 		description = request.form['description']
 
-		event_description = db.execute("SELECT event_description FROM tabEvent WHERE event_id = ?",
-			[event_id]).fetchone()
+		event_data = db.execute(
+			'SELECT * FROM tabEvent WHERE event_id = ?', [event_id]
+		).fetchone()
 
-		if description == event_description[0]:
+		if description == event_data['event_description']:
 			error = "No changes in the document."
 
-		print(description)
-
-
 		if not error:
-			db.execute("""UPDATE tabEvent SET event_description = ?, modified_by_user = ?, modified = ?
-			 	WHERE event_id = ?""", [description, g.user['user_id'], datetime.now(), event_id])
-
+			db.execute(
+				'UPDATE tabEvent SET event_description = ?, modified_by_user = ?, '
+				'modified = ? WHERE event_id = ?',
+				[description, g.user['user_id'], datetime.now(), event_id]
+			)
 			db.commit()
 
 			flash("Event Updated Successfully.", 'success')
@@ -117,8 +119,10 @@ def edit_event(event_id):
 
 		flash(error, 'error')
 
-	event_data = db.execute("SELECT * FROM tabEvent WHERE event_id = ?",
-		[event_id]).fetchone()
+	event_data = db.execute(
+		'SELECT * FROM tabEvent where event_id = ?', [event_id]
+	).fetchone()
+
 	return render_template('event/edit_event.html', data=event_data)
 
 
@@ -129,7 +133,10 @@ def delete_event(event_id):
 		abort(403, "Not permitted to view this page.")
 
 	db = get_db()
-	db.execute("DELETE FROM tabEvent WHERE event_id = ?", [event_id])
+	db.execute(
+		'DELETE FROM tabEvent WHERE event_id = ?', [event_id]
+	)
 	db.commit()
+
 	flash("Event deleted successfully", 'success')
 	return redirect(url_for('main.timeline'))
