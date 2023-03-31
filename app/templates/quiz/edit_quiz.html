@@ -11,13 +11,15 @@
 
 
 {% block content %}
-	{% if g and g.user and g.user.user_type == "Teacher" %}
-	<div class="d-flex justify-content-end my-4">
-		<form action="{{ url_for('quiz.delete_quiz', quiz_id=data['quiz_id']) }}" method="post">
-			<input class="btn btn-danger" type="submit" value="Delete Quiz" onclick="return confirm('Are you sure?');">
-		</form>
-	</div>
-	{% endif %}
+	{% if data %}
+
+		{% if g and g.user and g.user.user_type == "Teacher" %}
+		<div class="d-flex justify-content-end my-4">
+			<form action="{{ url_for('quiz.delete_quiz', quiz_id=data['quiz_id']) }}" method="post">
+				<input class="btn btn-danger" type="submit" value="Delete Quiz" onclick="return confirm('Are you sure?');">
+			</form>
+		</div>
+		{% endif %}
 
 	<main class="">
 		<form method="Post">			
@@ -40,4 +42,9 @@
 			<input class="btn btn-danger" type="submit" value="Delete" onclick="return confirm('Are you sure?');">
 		</form>
 	</main>
+	{% else %}
+	<div>
+		Nothing to show.
+	</div>
+	{% endif %}
 {% endblock %}

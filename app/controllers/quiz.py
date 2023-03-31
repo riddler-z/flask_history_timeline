@@ -105,15 +105,20 @@ def edit_quiz(quiz_id):
 
 		flash(error, 'error')
 
-	quiz_data = dict(db.execute(
+	quiz_data = db.execute(
 		'SELECT * FROM tabQuiz '
 		'LEFT JOIN tabEvent ON tabEvent.event_id = tabQuiz.event_id '
 		'WHERE tabQuiz.quiz_id = ?', [quiz_id]
-	).fetchone())
+	).fetchone()
 
-	quiz_data['quiz_title'] = '{0}, {1}, {2}'.format(
-			quiz_data['event_year'], quiz_data['event_country'], quiz_data['event_title']
-		)
+	if quiz_data:
+		quiz_data = dict(quiz_data)
+
+		quiz_data['quiz_title'] = '{0}, {1}, {2}'.format(
+				quiz_data['event_year'], quiz_data['event_country'], quiz_data['event_title']
+			)
+	else:
+		flash("Cannot find the specified quiz.", 'error')
 
 	return render_template('quiz/edit_quiz.html', data=quiz_data)
 
