@@ -1,7 +1,7 @@
 import os
 from flask import Flask
 from app.database import db
-from app.controllers import main, auth, event, announcement
+from app.controllers import main, auth, event, announcement, quiz
 
 
 def create_app():
@@ -29,6 +29,7 @@ def create_app():
 	app.register_blueprint(auth.bp)
 	app.register_blueprint(event.bp)
 	app.register_blueprint(announcement.bp)
+	app.register_blueprint(quiz.bp)
 
 	app.add_url_rule('/', endpoint='timeline')
 

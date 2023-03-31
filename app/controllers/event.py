@@ -13,7 +13,9 @@ def view_event(event_id):
 	db = get_db()
 
 	event_data = db.execute(
-		'SELECT * FROM tabEvent WHERE event_id = ?', [event_id]
+		'SELECT * FROM tabEvent '
+		'LEFT JOIN tabQuiz ON tabQuiz.event_id = tabEvent.event_id '
+		'WHERE tabEvent.event_id = ?', [event_id]
 	).fetchone()
 
 	if not event_data:

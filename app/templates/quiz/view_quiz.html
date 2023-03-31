@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}Quiz {{ data.quiz_id }}{% endblock %}
+
+
+{% block style %}
+<style>
+	.quiz-container {
+		background-color: #f2f2f2;
+		border: 1px solid #ccc;
+	}
+	
+</style>
+{% endblock %}
+
+
+{% block content %}
+	{% if data %}
+
+		{% if g and g.user and g.user.role == "Teacher" %}
+		<div class="d-flex justify-content-end my-4">
+			<a class="btn btn-primary" href="{{ url_for('quiz.edit_quiz', quiz_id=data.quiz_id) }}">
+				Edit Quiz
+			</a>
+		</div>
+		{% endif %}
+
+    <div class="quiz-container w-80 m-auto mt-5 p-3">
+        <h3 class="text-center text-uppercase">Quiz Details</h3>
+        <p>Country: {{ data.event_country }}</p>
+        <p>Year: {{ data.event_year }}</p>
+        <p>Event: {{ data.event_title }}</p>
+        <p>Description: {{ data.quiz_description or 'No description' }}</p>
+    </div>
+
+	{% else %}
+	<div>
+		Nothing to show.
+	</div>
+	{% endif %}
+
+{% endblock %}
