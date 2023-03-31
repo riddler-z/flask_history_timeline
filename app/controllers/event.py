@@ -138,5 +138,5 @@ def delete_event(event_id):
 	)
 	db.commit()
 
-	flash("Event deleted successfully", 'success')
+	flash("Event deleted successfully", 'info')
 	return redirect(url_for('main.timeline'))
