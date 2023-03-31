@@ -30,7 +30,9 @@ def view_event_group(event_year):
 	db = get_db()
 
 	events = db.execute(
-		'SELECT * FROM tabEvent where event_year = ?', [event_year]
+		'SELECT * FROM tabEvent '
+		'LEFT JOIN tabQuiz ON tabQuiz.event_id = tabEvent.event_id '
+		'WHERE tabEvent.event_year = ?', [event_year]
 	).fetchall()
 
 	events_data = {}
