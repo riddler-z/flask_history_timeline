@@ -8,7 +8,7 @@ bp = Blueprint('main', __name__)
 def timeline():
 	db = get_db()
 
-	events = db.execute("SELECT event_id, event_title, event_year, event_country FROM tabEvent").fetchall()
+	events = db.execute("SELECT * FROM tabEvent").fetchall()
 
 	events_data = {}
 
