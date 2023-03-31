@@ -1,7 +1,8 @@
 from datetime import datetime
-from flask import Blueprint, request, session, g, flash, \
-	render_template, redirect, url_for
+
+from flask import Blueprint, request, g, flash, render_template, redirect, url_for
 from werkzeug.exceptions import abort
+
 from app.database.db import get_db
 from app.controllers.auth import login_required
 
@@ -42,7 +43,7 @@ def create_announcement():
 			db.execute(
 				'INSERT INTO tabAnnouncement (announcement_title, announcement_content, '
 				'created_by_user, creation) VALUES (?, ?, ?, ?)',
-				[title, message, session.get('user_id'), datetime.now()]
+				[title, message, g.user['user_id'], datetime.now()]
 			)
 
 			db.commit()

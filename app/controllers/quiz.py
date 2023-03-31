@@ -1,7 +1,8 @@
 from datetime import datetime
-from flask import Blueprint, request, session, g, flash, \
-	render_template, redirect, url_for
+
+from flask import Blueprint, request, g, flash, render_template, redirect, url_for
 from werkzeug.exceptions import abort
+
 from app.database.db import get_db
 from app.controllers.auth import login_required
 
@@ -44,7 +45,7 @@ def create_quiz():
 			cursor = db.execute(
 				'INSERT INTO tabQuiz (event_id, quiz_description, '
 				'created_by_user, creation) VALUES (?, ?, ?, ?)',
-				[event_id, description, session.get('user_id'), datetime.now()]
+				[event_id, description, g.user['user_id'], datetime.now()]
 			)
 
 			db.commit()
