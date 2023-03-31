@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}New Announcement{% endblock %}
+
+
+{% block style %}
+<style>
+
+</style>
+{% endblock %}
+
+
+{% block content %}
+<main class="">
+	<form method="Post">
+		<h1 class="">Create New Announcement</h1>
+
+		<div class="form-floating">
+			<input type="text" class="form-control" name="title" placeholder="Title" required>
+			<label for="title">Title</label>
+		</div>
+		<div class="form-floating">
+			<textarea class="form-control" style="height:150px" name="message" placeholder="Message" rows="4"></textarea>
+			<label for="message">Message</label>
+		</div>
+		<div class="d-grid">
+			<button class="btn btn-primary" type="submit">Create Announcement</button>
+		</div>
+	</form>
+</main>
+{% endblock %}

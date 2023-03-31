@@ -1,7 +1,7 @@
 import os
 from flask import Flask
 from app.database import db
-from app.controllers import main, auth, event
+from app.controllers import main, auth, event, announcement
 
 
 def create_app():
@@ -21,11 +21,21 @@ def create_app():
 	# initialize database utilities
 	db.init_app(app)
 
+	# register function to Jinja's environment
+	app.jinja_env.filters['format_datetime'] = format_datetime
+
 	# register blueprints
 	app.register_blueprint(main.bp)
 	app.register_blueprint(auth.bp)
 	app.register_blueprint(event.bp)
+	app.register_blueprint(announcement.bp)
 
 	app.add_url_rule('/', endpoint='timeline')
 
 	return app
+
+
+def format_datetime(value, format='%d %b, %Y - %I:%M %p'):
+	from datetime import datetime
+
+	return datetime.strptime(value, '%Y-%m-%d %H:%M:%S.%f').strftime(format)

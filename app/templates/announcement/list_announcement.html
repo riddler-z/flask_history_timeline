@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}Announcements {{ data.event_id }}{% endblock %}
+
+
+{% block style %}
+<style>
+	.announcement-container {
+		background-color: #f2f2f2;
+		border: 1px solid #ccc;
+	}
+	
+</style>
+{% endblock %}
+
+
+{% block content %}
+	{% if g and g.user and g.user.role == "Teacher" %}
+	<div class="d-flex justify-content-end my-4">
+		<a class="btn btn-success" href="{{ url_for('announcement.create_announcement') }}">
+			Add New Announcement
+			<span class="fa fa-plus"></span>
+		</a>
+	</div>
+	{% endif %}
+
+
+
+	{% if data %}
+
+		{% for announcement in data %}
+
+		<div class="announcement-container w-80 m-auto mt-5 p-3">
+			<h5>{{ announcement.announcement_title }}</h5>
+			<p>{{ announcement.announcement_content }}</p>
+			<p>{{ announcement.creation|format_datetime }}</p>
+			<p>{{ announcement.username }}</p>
+
+			<form action="{{ url_for('announcement.delete_announcement', announcement_id=announcement.announcement_id) }}" method="post">
+				<input class="btn btn-danger" type="submit" value="Delete" onclick="return confirm('Are you sure?');">
+			</form>
+		</div>
+
+		{% endfor %}
+
+	{% else %}
+	<div>
+		Nothing to show.
+	</div>
+	{% endif %}
+
+{% endblock %}

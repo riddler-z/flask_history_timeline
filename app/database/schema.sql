@@ -50,6 +50,14 @@ CREATE TABLE tabEvent (
 	UNIQUE(event_year, event_title, event_country)
 );
 
+CREATE TABLE tabAnnouncement (
+	announcement_id INTEGER PRIMARY KEY AUTOINCREMENT,
+	announcement_title VARCHAR(140),
+	announcement_content TEXT,
+	creation DATETIME(6),
+	created_by_user INTEGER REFERENCES tabUser(user_id) ON DELETE CASCADE
+);
+
 CREATE TABLE tabQuiz (
 	quiz_id INTEGER PRIMARY KEY AUTOINCREMENT,
 	tilte VARCHAR(140) NOT NULL,
