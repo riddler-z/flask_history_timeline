@@ -15,21 +15,33 @@
 
 
 {% block content %}
-	{% if g and g.user and g.user.role == "Teacher" %}
-	<div class="d-flex justify-content-end my-4">
-		<a class="btn btn-primary" href="{{ url_for('event.edit_event', event_id=data.event_id) }}">
-			Edit Event
-		</a>
-	</div>
-	{% endif %}
-
 	{% if data %}
-    <div class="event-container w-80 m-auto mt-5 p-3">
-        <h5>{{ data.event_country }}</h5>
-        <h6>{{ data.event_year }}</h6>
-        <h3 class="text-center text-uppercase">{{ data.event_title }}</h3>
-        <p>{{ data.event_description }}</p>
-    </div>
+
+		{% if g and g.user and g.user.role == "Teacher" %}
+		<div class="d-flex justify-content-end my-4">
+			<a class="btn btn-primary" href="{{ url_for('event.edit_event', event_id=data.event_id) }}">
+				Edit Event
+			</a>
+		</div>
+		{% endif %}
+
+	<div class="event-container w-80 m-auto mt-5 p-3">
+		<h5>{{ data.event_country }}</h5>
+		<h6>{{ data.event_year }}</h6>
+		<h3 class="text-center text-uppercase">{{ data.event_title }}</h3>
+		<p>{{ data.event_description }}</p>
+		{% if data.quiz_id %}
+		<form action="{{ url_for('quiz.view_quiz', quiz_id=data.quiz_id) }}">
+			<input class="btn btn-primary" type="submit" value="View Quiz">
+		</form>
+		{% elif g and g.user and g.user.role == "Teacher" %}
+		<form action="{{ url_for('quiz.create_quiz') }}" method="POST">
+			<input type="hidden" name="event_id" value="{{ data.event_id }}">
+			<input type="hidden" name="description" value="">
+			<input class="btn btn-success" type="submit" value="Add Quiz">
+		</form>
+		{% endif %}
+	</div>
 	{% else %}
 	<div>
 		Nothing to show.

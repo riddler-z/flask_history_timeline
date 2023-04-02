@@ -2,6 +2,7 @@ DROP TABLE IF EXISTS tabUser;
 DROP TABLE IF EXISTS tabTeacher;
 DROP TABLE IF EXISTS tabStudent;
 DROP TABLE IF EXISTS tabEvent;
+DROP TABLE IF EXISTS tabAnnouncement;
 DROP TABLE IF EXISTS tabQuiz;
 DROP TABLE IF EXISTS tabQuizQuestion;
 DROP TABLE IF EXISTS tabQuizAnswer;
@@ -46,18 +47,25 @@ CREATE TABLE tabEvent (
 	modified DATETIME(6),
 	created_by_user INTEGER REFERENCES tabUser(user_id),
 	modified_by_user INTEGER REFERENCES tabUser(user_id),
-	quiz_id INTEGER REFERENCES tabQuiz(quiz_id) ON DELETE CASCADE,
 	UNIQUE(event_year, event_title, event_country)
+);
+
+CREATE TABLE tabAnnouncement (
+	announcement_id INTEGER PRIMARY KEY AUTOINCREMENT,
+	announcement_title VARCHAR(140),
+	announcement_content TEXT,
+	creation DATETIME(6),
+	created_by_user INTEGER REFERENCES tabUser(user_id) ON DELETE CASCADE
 );
 
 CREATE TABLE tabQuiz (
 	quiz_id INTEGER PRIMARY KEY AUTOINCREMENT,
-	tilte VARCHAR(140) NOT NULL,
-	description TEXT,
+	quiz_description TEXT,
 	creation DATETIME(6),
 	modified DATETIME(6),
 	created_by_user INTEGER REFERENCES tabUser(user_id),
-	modified_by_user INTEGER REFERENCES tabUser(user_id)
+	modified_by_user INTEGER REFERENCES tabUser(user_id),
+	event_id INTEGER REFERENCES tabEvent(event_id) ON DELETE CASCADE
 );
 
 CREATE TABLE tabQuizQuestion (

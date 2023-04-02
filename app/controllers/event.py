@@ -1,7 +1,8 @@
 from datetime import datetime
-from flask import Blueprint, request, session, g, flash, \
-	render_template, redirect, url_for
+
+from flask import Blueprint, request, g, flash, render_template, redirect, url_for
 from werkzeug.exceptions import abort
+
 from app.database.db import get_db
 from app.controllers.auth import login_required
 
@@ -13,7 +14,9 @@ def view_event(event_id):
 	db = get_db()
 
 	event_data = db.execute(
-		'SELECT * FROM tabEvent WHERE event_id = ?', [event_id]
+		'SELECT * FROM tabEvent '
+		'LEFT JOIN tabQuiz ON tabQuiz.event_id = tabEvent.event_id '
+		'WHERE tabEvent.event_id = ?', [event_id]
 	).fetchone()
 
 	if not event_data:
@@ -27,7 +30,9 @@ def view_event_group(event_year):
 	db = get_db()
 
 	events = db.execute(
-		'SELECT * FROM tabEvent where event_year = ?', [event_year]
+		'SELECT * FROM tabEvent '
+		'LEFT JOIN tabQuiz ON tabQuiz.event_id = tabEvent.event_id '
+		'WHERE tabEvent.event_year = ?', [event_year]
 	).fetchall()
 
 	events_data = {}
@@ -63,12 +68,16 @@ def create_event():
 
 		if country not in ["Italy", "Germany"]:
 			error = 'Please select a country from list'
+		elif int(year) not in range(1000, 3000):
+			error = 'Invalid year'
 
 		if not error:
 			try:
-				cursor = db.execute("""INSERT INTO tabEvent (event_country, event_year, event_title,
-					event_description, created_by_user, creation) VALUES (?, ?, ?, ?, ?, ?)""",
-					[country, year, title, description, session.get('user_id'), datetime.now()])
+				cursor = db.execute(
+					'INSERT INTO tabEvent (event_country, event_year, event_title, event_description, '
+					'created_by_user, creation) VALUES (?, ?, ?, ?, ?, ?)',
+					[country, year, title, description, g.user['user_id'], datetime.now()]
+				)
 
 				event_id = cursor.lastrowid
 				db.commit()
@@ -95,19 +104,19 @@ def edit_event(event_id):
 	if request.method == 'POST':
 		description = request.form['description']
 
-		event_description = db.execute("SELECT event_description FROM tabEvent WHERE event_id = ?",
-			[event_id]).fetchone()
+		event_data = db.execute(
+			'SELECT * FROM tabEvent WHERE event_id = ?', [event_id]
+		).fetchone()
 
-		if description == event_description[0]:
+		if description == event_data['event_description']:
 			error = "No changes in the document."
 
-		print(description)
-
-
 		if not error:
-			db.execute("""UPDATE tabEvent SET event_description = ?, modified_by_user = ?, modified = ?
-			 	WHERE event_id = ?""", [description, g.user['user_id'], datetime.now(), event_id])
-
+			db.execute(
+				'UPDATE tabEvent SET event_description = ?, modified_by_user = ?, '
+				'modified = ? WHERE event_id = ?',
+				[description, g.user['user_id'], datetime.now(), event_id]
+			)
 			db.commit()
 
 			flash("Event Updated Successfully.", 'success')
@@ -115,8 +124,10 @@ def edit_event(event_id):
 
 		flash(error, 'error')
 
-	event_data = db.execute("SELECT * FROM tabEvent WHERE event_id = ?",
-		[event_id]).fetchone()
+	event_data = db.execute(
+		'SELECT * FROM tabEvent where event_id = ?', [event_id]
+	).fetchone()
+
 	return render_template('event/edit_event.html', data=event_data)
 
 
@@ -127,7 +138,10 @@ def delete_event(event_id):
 		abort(403, "Not permitted to view this page.")
 
 	db = get_db()
-	db.execute("DELETE FROM tabEvent WHERE event_id = ?", [event_id])
+	db.execute(
+		'DELETE FROM tabEvent WHERE event_id = ?', [event_id]
+	)
 	db.commit()
-	flash("Event deleted successfully", 'success')
+
+	flash("Event deleted successfully", 'info')
 	return redirect(url_for('main.timeline'))

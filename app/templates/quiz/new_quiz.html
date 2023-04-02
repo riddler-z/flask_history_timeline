@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}New Quiz{% endblock %}
+
+
+{% block style %}
+<style>
+
+</style>
+{% endblock %}
+
+
+{% block content %}
+<main class="">
+	<form method="Post">
+		<h1 class="">Create New Quiz</h1>
+
+		<select class="form-select" name="event_id">
+			<option selected>Select an Event from list</option>
+			{% for event_opt in data.event_options %}	
+			<option value="{{ event_opt[0] }}">{{ event_opt[1] }}</option>
+			{% endfor %}
+		</select>
+		<div class="form-floating">
+			<textarea class="form-control" style="height:150px" name="description" placeholder="Description" rows="4"></textarea>
+			<label for="description">Description</label>
+		</div>
+		<div class="d-grid">
+			<button class="btn btn-primary" type="submit">Create Quiz</button>
+		</div>
+	</form>
+</main>
+{% endblock %}
