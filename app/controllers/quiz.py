@@ -21,6 +21,17 @@ def view_quiz(quiz_id):
 
 	if not quiz_data:
 		flash('Cannot find the specified quiz.', 'error')
+	else:
+		questions = db.execute(
+			'SELECT count(*) as total FROM tabQuizQuestion '
+			'WHERE quiz_id = ?', [quiz_id]
+		).fetchone()
+
+		quiz_data = dict(quiz_data)
+
+		quiz_data.update({
+			'no_of_question': questions['total']
+		})
 
 	return render_template('quiz/view_quiz.html', data=quiz_data)
 
@@ -143,3 +154,119 @@ def delete_quiz(quiz_id):
 
 	flash("Quiz deleted successfully", 'info')
 	return redirect(url_for('event.view_event', event_id=event_id))
+
+
+
+@bp.route('/<int:quiz_id>/question/list')
+@login_required
+def list_question(quiz_id):
+	db = get_db()
+
+	data = {}
+
+	quiz = db.execute(
+		'SELECT * FROM tabQuiz '
+		'LEFT JOIN tabEvent ON tabEvent.event_id = tabQuiz.event_id '
+		'WHERE quiz_id = ?', [quiz_id]
+	).fetchone()
+
+	if quiz:
+		data['quiz'] = quiz
+
+		questions = db.execute(
+			'SELECT * FROM tabQuizQuestion WHERE quiz_id = ?', [quiz_id]
+		).fetchall()
+		data['questions'] = []
+
+		for question in questions:
+			answers = db.execute(
+				'SELECT * FROM tabQuizAnswer WHERE question_id = ?', [question['question_id']]
+			).fetchall()
+			data['questions'].append((question, answers))
+
+	return render_template('quiz/list_question.html', data=data)
+
+
+@bp.route('/<int:quiz_id>/question/new', methods=['GET', 'POST'])
+@login_required
+def create_question(quiz_id):
+	if g.user['role'] != "Teacher":
+		abort(403, "Not permitted to view this page.")
+
+	db = get_db()
+	if request.method == 'POST':
+		question = request.form['question']
+		answer_opt = request.form['answer']
+		option_1 = request.form['option_1']
+		option_2 = request.form['option_2']
+		option_3 = request.form['option_3']
+		option_4 = request.form['option_4']
+
+		answer = request.form[answer_opt]
+		opts = [option_1, option_2, option_3, option_4]
+		options = []
+		for opt in opts:
+			options.append((opt, opt == answer))
+
+		error = None
+
+		if not question:
+			error = 'Question is required'
+
+		if not (option_1 and option_2):
+			error = 'At least 2 Answer options are required'
+
+		if not answer:
+			error = 'Answer is required'
+
+		if option_1 == option_2:
+			error = 'Answer options cannot be same'
+
+		if not error:
+			cursor = db.execute(
+				'INSERT INTO tabQuizQuestion (question, quiz_id, '
+				'created_by_user, creation) VALUES (?, ?, ?, ?)',
+				[question, quiz_id, g.user['user_id'], datetime.now()]
+			)
+
+			question_id = cursor.lastrowid
+
+			for opt in options:
+				db.execute(
+					'INSERT INTO tabQuizAnswer (answer, is_correct, question_id, '
+					'created_by_user, creation) VALUES (?, ?, ?, ?, ?)',
+					[opt[0], opt[1], question_id, g.user['user_id'], datetime.now()]
+				)
+
+			db.commit()
+			flash("Question created successfully", 'success')
+			return redirect(url_for("quiz.list_question", quiz_id=quiz_id))
+
+		flash(error, 'error')
+
+	event_data = db.execute(
+		'SELECT * FROM tabEvent '
+		'LEFT JOIN tabQuiz ON tabQuiz.event_id = tabEvent.event_id '
+		'WHERE tabQuiz.quiz_id = ?', [quiz_id]
+	).fetchone()
+
+	if not event_data:
+		flash('Cannot find the specified quiz.', 'error')
+
+	return render_template('quiz/new_question.html', data=event_data)
+
+
+@bp.route('/<int:quiz_id>/question/<int:question_id>', methods=['POST'])
+@login_required
+def delete_question(quiz_id, question_id):
+	if g.user['role'] != "Teacher":
+		abort(403, "Not permitted to view this page.")
+
+	db = get_db()
+	db.execute(
+		'DELETE FROM tabQuizQuestion WHERE question_id = ?', [question_id]
+	)
+	db.commit()
+
+	flash("Question deleted successfully", 'info')
+	return redirect(url_for('quiz.list_question', quiz_id=quiz_id))

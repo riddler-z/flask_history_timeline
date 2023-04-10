@@ -31,7 +31,18 @@
         <p>Year: {{ data.event_year }}</p>
         <p>Event: {{ data.event_title }}</p>
         <p>Description: {{ data.quiz_description or 'No description' }}</p>
+        <p>Questions: {{ data.no_of_question or 0 }}</p>
     </div>
+
+		{% if data.no_of_question %}
+		<form action="{{ url_for('quiz.list_question', quiz_id=data.quiz_id) }}">
+			<input class="btn btn-success" type="submit" value="View Questions">
+		</form>
+		{% else %}
+		<form action="{{ url_for('quiz.create_question', quiz_id=data.quiz_id) }}">
+			<input class="btn btn-primary" type="submit" value="Add Question">
+		</form>
+		{% endif %}
 
 	{% else %}
 	<div>
