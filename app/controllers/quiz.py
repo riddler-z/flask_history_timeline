@@ -204,6 +204,7 @@ def create_question(quiz_id):
 
 		answer = request.form[answer_opt]
 		opts = [option_1, option_2, option_3, option_4]
+		opts = [x for x in opts if x]
 		options = []
 		for opt in opts:
 			options.append((opt, opt == answer))
