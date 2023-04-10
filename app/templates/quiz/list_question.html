@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}Questions {{ data.event_id }}{% endblock %}
+
+
+{% block style %}
+<style>
+	.announcement-container {
+		background-color: #f2f2f2;
+		border: 1px solid #ccc;
+	}
+	
+</style>
+{% endblock %}
+
+
+{% block content %}
+	{% if g and g.user and g.user.role == "Teacher" %}
+	<div class="d-flex justify-content-end my-4">
+		<a class="btn btn-success" href="{{ url_for('quiz.create_question', quiz_id=data.quiz.quiz_id) }}">
+			Add New Question
+			<span class="fa fa-plus"></span>
+		</a>
+	</div>
+	{% endif %}
+
+    <h1>Quiz: {{ data.quiz.event_title }}</h1>
+    <h2>Questions:</h2>
+
+	{% if data.questions %}
+
+		<ul>
+			{% for question in data.questions %}
+				<li class="text-blue">
+					{{ question[0].question }}
+					<ul>
+						{% for answer in question[1] %}
+							<li>
+								<span class="text-{{ 'success' if answer.is_correct else 'danger'}}">
+									{{ answer.answer }}
+								</span>
+
+							</li>
+						{% endfor %}
+					</ul>
+					<form action="{{ url_for('quiz.delete_question', question_id=question[0].question_id, quiz_id=data.quiz.quiz_id) }}" method="post">
+						<input class="btn btn-danger" type="submit" value="Delete" onclick="return confirm('Are you sure?');">
+					</form>
+				</li>
+			{% endfor %}
+		</ul>
+
+	{% else %}
+	<div>
+		Nothing to show.
+	</div>
+	{% endif %}
+
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}New Question{% endblock %}
+
+
+{% block style %}
+<style>
+	.event-container {
+		background-color: #f2f2f2;
+		border: 1px solid #ccc;
+	}
+	
+</style>
+{% endblock %}
+
+
+{% block content %}
+<main class="">
+	<form method="Post">
+		<h1 class="">Create New Question</h1>
+
+		<div class="form-floating">
+			<input type="text" class="form-control" name="question" placeholder="Question" required>
+			<label for="question">Question</label>
+		</div>
+		<div class="form-floating">
+			<input type="text" class="form-control" name="option_1" placeholder="Option 1" required>
+			<label for="option_1">Option 1</label>
+		</div>
+		<div class="form-floating">
+			<input type="text" class="form-control" name="option_2" placeholder="Option 2" required>
+			<label for="option_2">Option 2</label>
+		</div>
+		<div class="form-floating">
+			<input type="text" class="form-control" name="option_3" placeholder="Option 3">
+			<label for="option_3">Option 3</label>
+		</div>
+		<div class="form-floating">
+			<input type="text" class="form-control" name="option_4" placeholder="Option 4">
+			<label for="option_4">Option 4</label>
+		</div>
+		<select class="form-select" name="answer">
+			<option selected>Correct Option</option>
+			<option value="option_1">1</option>
+			<option value="option_2">2</option>
+			<option value="option_3">3</option>
+			<option value="option_4">4</option>
+		</select>
+		<div class="d-grid">
+			<button class="btn btn-primary" type="submit">Create Question</button>
+		</div>
+	</form>
+
+	<hr>
+
+	<div class="event-container w-80 m-auto mt-5 p-3">	
+		<h5>{{ data.event_country }}</h5>
+		<h6>{{ data.event_year }}</h6>
+		<h3 class="text-center text-uppercase">{{ data.event_title }}</h3>
+		<p>{{ data.event_description }}</p>
+	</div>
+</main>
+{% endblock %}
