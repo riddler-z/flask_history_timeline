@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Take Quiz {{ quiz.quiz_id }}{% endblock %}
+
+
+{% block style %}
+<style>
+	.quiz-container {
+		background-color: #f2f2f2;
+		border: 1px solid #ccc;
+	}
+	
+</style>
+{% endblock %}
+
+
+{% block content %}
+	<h1>Take Quiz: {{ quiz.quiz_description }}</h1>
+	<form action="{{ url_for('quiz.take_quiz', quiz_id=quiz.quiz_id) }}" method="post">
+		<ol>
+			{% for question, answers in questions_with_answers %}
+				<li>
+					<h3>{{ question.question }}</h3>
+					{% for answer in answers %}
+						<div>
+							<input type="radio" id="answer_{{ answer.answer_id }}" name="answer_{{ question.question_id }}" value="{{ answer.answer_id }}">
+							<label for="answer_{{ answer.answer_id }}">{{ answer.answer }}</label>
+						</div>
+					{% endfor %}
+				</li>
+			{% endfor %}
+		</ol>
+		<input type="submit" value="Submit Quiz">
+	</form>
+{% endblock %}

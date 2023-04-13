@@ -92,6 +92,7 @@ CREATE TABLE tabQuizAnswer (
 CREATE TABLE tabQuizResult (
 	result_id INTEGER PRIMARY KEY AUTOINCREMENT,
 	score INTEGER,
+	total INTEGER,
 	creation DATETIME(6),
 	quiz_id INTEGER REFERENCES tabQuiz(quiz_id) ON DELETE CASCADE,
 	user_id INTEGER REFERENCES tabUser(user_id) ON DELETE CASCADE
