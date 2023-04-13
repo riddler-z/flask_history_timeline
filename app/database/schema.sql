@@ -89,18 +89,19 @@ CREATE TABLE tabQuizAnswer (
 	question_id INTEGER REFERENCES tabQuizQuestion(question_id) ON DELETE CASCADE
 );
 
+CREATE TABLE tabQuizResult (
+	result_id INTEGER PRIMARY KEY AUTOINCREMENT,
+	score INTEGER,
+	total INTEGER,
+	creation DATETIME(6),
+	quiz_id INTEGER REFERENCES tabQuiz(quiz_id) ON DELETE CASCADE,
+	user_id INTEGER REFERENCES tabUser(user_id) ON DELETE CASCADE
+);
+
 CREATE TABLE tabQuizAssignment (
 	assignment_id INTEGER PRIMARY KEY AUTOINCREMENT,
 	is_completed BOOLEAN,
 	creation DATETIME(6),
 	assigned_by_user INTEGER REFERENCES tabUser(user_id) ON DELETE CASCADE,
 	assigned_to_user INTEGER REFERENCES tabUser(user_id) ON DELETE CASCADE
-);
-
-CREATE TABLE tabQuizResult (
-	result_id INTEGER PRIMARY KEY AUTOINCREMENT,
-	score INTEGER,
-	creation DATETIME(6),
-	quiz_id INTEGER REFERENCES tabQuiz(quiz_id) ON DELETE CASCADE,
-	user_id INTEGER REFERENCES tabUser(user_id) ON DELETE CASCADE
 );

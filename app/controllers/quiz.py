@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from flask import Blueprint, request, g, flash, render_template, redirect, url_for
+from flask import Blueprint, request, g, flash, render_template, redirect, url_for, session
 from werkzeug.exceptions import abort
 
 from app.database.db import get_db
@@ -204,6 +204,7 @@ def create_question(quiz_id):
 
 		answer = request.form[answer_opt]
 		opts = [option_1, option_2, option_3, option_4]
+		opts = [x for x in opts if x]
 		options = []
 		for opt in opts:
 			options.append((opt, opt == answer))
@@ -270,3 +271,82 @@ def delete_question(quiz_id, question_id):
 
 	flash("Question deleted successfully", 'info')
 	return redirect(url_for('quiz.list_question', quiz_id=quiz_id))
+
+
+@bp.route('<int:quiz_id>/take', methods=['GET', 'POST'])
+@login_required
+def take_quiz(quiz_id):
+	db = get_db()
+
+	quiz = db.execute(
+		'SELECT * FROM tabQuiz WHERE quiz_id = ?', [quiz_id]
+	).fetchone()
+
+	if quiz:
+		if request.method == 'POST':
+			user_answers = {key: value for key, value in request.form.items() if key.startswith('answer_')}
+
+			score = 0
+			for answer_id in user_answers.values():
+				is_correct = db.execute(
+					'SELECT is_correct FROM tabQuizAnswer WHERE answer_id = ?', [answer_id]
+				).fetchone()
+
+				if is_correct and is_correct['is_correct']:
+					score += 1
+
+			db.execute(
+				'INSERT INTO tabQuizResult (score, total, creation, quiz_id, user_id) VALUES (?, ?, ?, ?, ?)',
+				[score, len(user_answers), datetime.now(), quiz_id, session.get('user_id')])
+
+			db.commit()
+
+			return redirect(url_for('quiz.result_quiz', quiz_id=quiz['quiz_id'], user_id=session.get('user_id')))
+
+		else:
+			questions = db.execute(
+				'SELECT * FROM tabQuizQuestion WHERE quiz_id = ?', [quiz_id]
+			).fetchall()
+
+			questions_with_answers = []
+			for question in questions:
+				answers = db.execute(
+					'SELECT * FROM tabQuizAnswer WHERE question_id = ?', [question['question_id']]
+				).fetchall()
+
+				questions_with_answers.append((question, answers))
+
+			return render_template('quiz/take_quiz.html', quiz=dict(quiz), questions_with_answers=questions_with_answers)
+	else:
+		return "Quiz not found", 404
+
+
+# Route to display the quiz results
+@bp.route('/results')
+@bp.route('/results/quiz_id=<int:quiz_id>')
+@bp.route('/results/quiz_id=<int:quiz_id>/user_id=<int:user_id>')
+@login_required
+def result_quiz(quiz_id=None, user_id=None):
+	db = get_db()
+
+	query = (
+		'SELECT qr.score, qr.total, qr.creation, u.username, e.event_country, '
+		'e.event_year, e.event_title FROM tabQuizResult qr '
+		'LEFT JOIN tabUser u on u.user_id = qr.user_id '
+		'LEFT JOIN tabQuiz q ON q.quiz_id = qr.quiz_id '
+		'LEFT JOIN tabEvent e ON e.event_id = q.event_id '
+	)
+	params = []
+
+	if quiz_id:
+		query += 'WHERE q.quiz_id = ? '
+		params.append(quiz_id)
+
+	if user_id:
+		query += '{} u.user_id = ? '.format('AND' if 'WHERE' in query else 'WHERE')
+		params.append(user_id)
+
+
+	query += 'ORDER BY qr.creation DESC'
+	data = db.execute(query, params).fetchall()
+	return render_template('quiz/result_quiz.html', data=data)

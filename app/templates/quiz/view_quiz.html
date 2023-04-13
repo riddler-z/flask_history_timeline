@@ -18,36 +18,42 @@
 	{% if data %}
 
 		{% if g and g.user and g.user.role == "Teacher" %}
-		<div class="d-flex justify-content-end my-4">
-			<a class="btn btn-primary" href="{{ url_for('quiz.edit_quiz', quiz_id=data.quiz_id) }}">
-				Edit Quiz
-			</a>
-		</div>
+			<div class="d-flex justify-content-end my-4">
+				<a class="btn btn-primary" href="{{ url_for('quiz.edit_quiz', quiz_id=data.quiz_id) }}">
+					Edit Quiz
+				</a>
+			</div>
 		{% endif %}
 
-    <div class="quiz-container w-80 m-auto mt-5 p-3">
-        <h3 class="text-center text-uppercase">Quiz Details</h3>
-        <p>Country: {{ data.event_country }}</p>
-        <p>Year: {{ data.event_year }}</p>
-        <p>Event: {{ data.event_title }}</p>
-        <p>Description: {{ data.quiz_description or 'No description' }}</p>
-        <p>Questions: {{ data.no_of_question or 0 }}</p>
-    </div>
+		<div class="quiz-container w-80 m-auto mt-5 p-3">
+			<h3 class="text-center text-uppercase">Quiz Details</h3>
+			<p>Country: {{ data.event_country }}</p>
+			<p>Year: {{ data.event_year }}</p>
+			<p>Event: {{ data.event_title }}</p>
+			<p>Description: {{ data.quiz_description or 'No description' }}</p>
+			<p>Questions: {{ data.no_of_question or 0 }}</p>
+		</div>
 
-		{% if data.no_of_question %}
-		<form action="{{ url_for('quiz.list_question', quiz_id=data.quiz_id) }}">
-			<input class="btn btn-success" type="submit" value="View Questions">
-		</form>
+		{% if g and g.user and g.user.role == "Teacher" %}
+			{% if data.no_of_question %}
+			<form action="{{ url_for('quiz.list_question', quiz_id=data.quiz_id) }}">
+				<input class="btn btn-success" type="submit" value="View Questions">
+			</form>
+			{% else %}
+			<form action="{{ url_for('quiz.create_question', quiz_id=data.quiz_id) }}">
+				<input class="btn btn-primary" type="submit" value="Add Question">
+			</form>
+			{% endif %}
 		{% else %}
-		<form action="{{ url_for('quiz.create_question', quiz_id=data.quiz_id) }}">
-			<input class="btn btn-primary" type="submit" value="Add Question">
-		</form>
+			<form action="{{ url_for('quiz.take_quiz', quiz_id=data.quiz_id) }}" method="get">
+				<input class="btn btn-primary" type="submit" value="Take Quiz">
+			</form>
 		{% endif %}
 
 	{% else %}
-	<div>
-		Nothing to show.
-	</div>
+		<div>
+			Nothing to show.
+		</div>
 	{% endif %}
 
 {% endblock %}
