@@ -11,7 +11,7 @@ def timeline():
 
 	events = db.execute(
 		'SELECT * FROM tabEvent '
-		'ORDER BY event_year DESC, event_title ASC'
+		'ORDER BY event_year ASC, event_title ASC'
 	).fetchall()
 
 	events_data = {}

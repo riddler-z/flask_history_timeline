@@ -30,7 +30,7 @@
 					<h3 class="text-center text-uppercase">{{ event.event_title }}</h3>
 					<p>{{ event.event_description }}</p>
 					{% if event.quiz_id %}
-					<a class="btn btn-primary" href="{{ url_for('quiz.view_quiz', quiz_id=data.quiz_id) }}">
+					<a class="btn btn-primary" href="{{ url_for('quiz.view_quiz', quiz_id=event.quiz_id) }}">
 						View Quiz
 					</a>
 					{% elif g and g.user and g.user.role == "Teacher" %}
