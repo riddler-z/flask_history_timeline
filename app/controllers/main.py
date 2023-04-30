@@ -9,7 +9,10 @@ bp = Blueprint('main', __name__)
 def timeline():
 	db = get_db()
 
-	events = db.execute('SELECT * FROM tabEvent').fetchall()
+	events = db.execute(
+		'SELECT * FROM tabEvent '
+		'ORDER BY event_year DESC, event_title ASC'
+	).fetchall()
 
 	events_data = {}
 
