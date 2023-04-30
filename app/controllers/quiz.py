@@ -328,6 +328,9 @@ def take_quiz(quiz_id):
 @login_required
 def result_quiz(quiz_id=None, user_id=None):
 	db = get_db()
+	data = {
+		'quiz_id': quiz_id
+	}
 
 	query = (
 		'SELECT qr.score, qr.total, qr.creation, u.username, e.event_country, '
@@ -348,5 +351,5 @@ def result_quiz(quiz_id=None, user_id=None):
 
 
 	query += 'ORDER BY qr.creation DESC'
-	data = db.execute(query, params).fetchall()
+	data['results'] = db.execute(query, params).fetchall()
 	return render_template('quiz/result_quiz.html', data=data)

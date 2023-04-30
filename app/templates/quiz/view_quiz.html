@@ -36,18 +36,18 @@
 
 		{% if g and g.user and g.user.role == "Teacher" %}
 			{% if data.no_of_question %}
-			<form action="{{ url_for('quiz.list_question', quiz_id=data.quiz_id) }}">
-				<input class="btn btn-success" type="submit" value="View Questions">
-			</form>
+			<a class="btn btn-success" href="{{ url_for('quiz.list_question', quiz_id=data.quiz_id) }}">
+				View Questions
+			</a>
 			{% else %}
-			<form action="{{ url_for('quiz.create_question', quiz_id=data.quiz_id) }}">
-				<input class="btn btn-primary" type="submit" value="Add Question">
-			</form>
+			<a class="btn btn-primary" href="{{ url_for('quiz.create_question', quiz_id=data.quiz_id) }}">
+				Add Question
+			</a>
 			{% endif %}
 		{% else %}
-			<form action="{{ url_for('quiz.take_quiz', quiz_id=data.quiz_id) }}" method="get">
-				<input class="btn btn-primary" type="submit" value="Take Quiz">
-			</form>
+			<a class="btn btn-primary" href="{{ url_for('quiz.take_quiz', quiz_id=data.quiz_id) }}">
+				Take Quiz
+			</a>
 		{% endif %}
 
 	{% else %}
