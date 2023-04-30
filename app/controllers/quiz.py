@@ -12,14 +12,17 @@ bp = Blueprint('quiz', __name__, url_prefix='/quiz')
 @bp.route('/<int:quiz_id>')
 def view_quiz(quiz_id):
 	db = get_db()
+	data = {
+		'quiz_id': quiz_id
+	}
 
-	quiz_data = db.execute(
+	data['quiz_data'] = db.execute(
 		'SELECT * FROM tabQuiz '
 		'LEFT JOIN tabEvent ON tabEvent.event_id = tabQuiz.event_id '
 		'WHERE tabQuiz.quiz_id = ?', [quiz_id]
 	).fetchone()
 
-	if not quiz_data:
+	if not data['quiz_data']:
 		flash('Cannot find the specified quiz.', 'error')
 	else:
 		questions = db.execute(
@@ -27,13 +30,10 @@ def view_quiz(quiz_id):
 			'WHERE quiz_id = ?', [quiz_id]
 		).fetchone()
 
-		quiz_data = dict(quiz_data)
+		data['no_of_question'] = questions['total']
+		data['results'] = get_quiz_results(quiz_id)
 
-		quiz_data.update({
-			'no_of_question': questions['total']
-		})
-
-	return render_template('quiz/view_quiz.html', data=quiz_data)
+	return render_template('quiz/view_quiz.html', data=data)
 
 
 @bp.route('/new', methods=['GET', 'POST'])
@@ -327,6 +327,15 @@ def take_quiz(quiz_id):
 @bp.route('/results/quiz_id=<int:quiz_id>/user_id=<int:user_id>')
 @login_required
 def result_quiz(quiz_id=None, user_id=None):
+	data = {
+		'quiz_id': quiz_id,
+		'results': get_quiz_results(quiz_id, user_id)
+	}
+
+	return render_template('quiz/result_quiz.html', data=data)
+
+
+def get_quiz_results(quiz_id=None, user_id=None):
 	db = get_db()
 
 	query = (
@@ -342,11 +351,14 @@ def result_quiz(quiz_id=None, user_id=None):
 		query += 'WHERE q.quiz_id = ? '
 		params.append(quiz_id)
 
+	if g.user['role'] == "Student":
+		user_id = g.user['user_id']
+
 	if user_id:
 		query += '{} u.user_id = ? '.format('AND' if 'WHERE' in query else 'WHERE')
 		params.append(user_id)
 
 
 	query += 'ORDER BY qr.creation DESC'
-	data = db.execute(query, params).fetchall()
-	return render_template('quiz/result_quiz.html', data=data)
+	results = db.execute(query, params).fetchall()
+	return results

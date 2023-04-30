@@ -11,14 +11,6 @@
 
 
 {% block content %}
-	{% if g and g.user and g.user.user_type == "Teacher" %}
-	<div class="d-flex justify-content-end my-4">
-		<form action="{{ url_for('event.delete_event', event_id=data['event_id']) }}" method="post">
-			<input class="btn btn-danger" type="submit" value="Delete Event" onclick="return confirm('Are you sure?');">
-		</form>
-	</div>
-	{% endif %}
-
 	<main class="">
 		<form method="Post">
 			<h1 class="">Edit Event</h1>

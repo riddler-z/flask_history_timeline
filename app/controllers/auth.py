@@ -91,7 +91,7 @@ def login():
 			session.clear()
 			session['user_id'] = user['user_id']
 			flash("Logged in successfully", 'info')
-			return redirect(url_for('timeline'))
+			return redirect(url_for('main.timeline'))
 
 		flash(error, 'error')
 
@@ -102,7 +102,7 @@ def login():
 def logout():
 	session.clear()
 	flash("Logged out successfully", 'info')
-	return redirect(url_for('timeline'))
+	return redirect(url_for('main.timeline'))
 
 
 @bp.before_app_request

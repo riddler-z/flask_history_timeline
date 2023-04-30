@@ -14,7 +14,7 @@
 
 		<nav class="navbar navbar-expand-lg navbar-dark bg-dark p-0">
 			<div class="container">
-				<a class="navbar-brand text-white" href="{{ url_for('timeline') }}">
+				<a class="navbar-brand text-white" href="{{ url_for('main.timeline') }}">
 					<img src="{{ url_for('static', filename='img/app_logo.png') }}" alt="logo" width="60">
 					History Timeline
 				</a>
@@ -25,7 +25,7 @@
 
 					<ul class="navbar-nav ms-auto">
 						<li class="nav-item">
-							<a class="nav-link active" aria-current="page" href="{{ url_for('timeline') }}">Home</a>
+							<a class="nav-link active" aria-current="page" href="{{ url_for('main.timeline') }}">Home</a>
 						</li>
 
 						{% if g and g.user %}

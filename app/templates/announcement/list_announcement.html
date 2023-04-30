@@ -36,9 +36,13 @@
 			<p>{{ announcement.creation|format_datetime }}</p>
 			<p>{{ announcement.username }}</p>
 
+
+			{% if g and g.user and g.user.role == "Teacher" %}
 			<form action="{{ url_for('announcement.delete_announcement', announcement_id=announcement.announcement_id) }}" method="post">
 				<input class="btn btn-danger" type="submit" value="Delete" onclick="return confirm('Are you sure?');">
 			</form>
+			{% endif %}
+
 		</div>
 
 		{% endfor %}

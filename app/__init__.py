@@ -31,8 +31,6 @@ def create_app():
 	app.register_blueprint(announcement.bp)
 	app.register_blueprint(quiz.bp)
 
-	app.add_url_rule('/', endpoint='timeline')
-
 	return app
 
 
