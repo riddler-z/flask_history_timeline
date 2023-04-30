@@ -9,13 +9,18 @@
 		background-color: #f2f2f2;
 		border: 1px solid #ccc;
 	}
+
+	table, th, td {
+		border: 1px solid black;
+		padding: 10px;
+	}
 	
 </style>
 {% endblock %}
 
 
 {% block content %}
-	{% if data %}
+	{% if data.quiz_data %}
 
 		{% if g and g.user and g.user.role == "Teacher" %}
 			<div class="d-flex justify-content-end my-4">
@@ -27,10 +32,10 @@
 
 		<div class="quiz-container w-80 m-auto mt-5 p-3">
 			<h3 class="text-center text-uppercase">Quiz Details</h3>
-			<p>Country: {{ data.event_country }}</p>
-			<p>Year: {{ data.event_year }}</p>
-			<p>Event: {{ data.event_title }}</p>
-			<p>Description: {{ data.quiz_description or 'No description' }}</p>
+			<p>Country: {{ data.quiz_data.event_country }}</p>
+			<p>Year: {{ data.quiz_data.event_year }}</p>
+			<p>Event: {{ data.quiz_data.event_title }}</p>
+			<p>Description: {{ data.quiz_data.quiz_description or 'No description' }}</p>
 			<p>Questions: {{ data.no_of_question or 0 }}</p>
 		</div>
 
@@ -48,6 +53,35 @@
 			<a class="btn btn-primary" href="{{ url_for('quiz.take_quiz', quiz_id=data.quiz_id) }}">
 				Take Quiz
 			</a>
+		{% endif %}
+
+		{% if data.results %}
+		<hr>
+		<h3 class="text-center">Quiz Result History</h3>
+		<table class="text-center mt-5 m-auto">
+			<thead class="bg-secondary">
+				<tr>
+					<th>Attempt Time</th>
+					<th>Quiz</th>
+					<th>User</th>
+					<th>Score</th>
+					<th>Total</th>
+					<th>Percentage %</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for result in data.results %}
+					<tr>
+						<td>{{ result.creation | format_datetime }}</td>
+						<td>{{ '{}, {}, {}'.format(result.event_country, result.event_year, result.event_title) }}</td>
+						<td>{{ result.username }}</td>
+						<td>{{ result.score }}</td>
+						<td>{{ result.total }}</td>
+						<td>{{ (result.score * 100 / result.total) | round(2) }}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
 		{% endif %}
 
 	{% else %}
